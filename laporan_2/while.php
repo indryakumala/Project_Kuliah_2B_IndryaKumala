@@ -14,7 +14,7 @@
     }
     echo "<br>";
 
-    echo "<h3> cara 2 </h3>";
+    echo "<H3> cara 2 </h3>";
     $i = 1;
     while ($i <= 10):
         print $i;

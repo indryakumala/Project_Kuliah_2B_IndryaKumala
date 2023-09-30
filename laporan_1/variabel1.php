@@ -4,7 +4,7 @@
 </head>
 <body>
     <?php 
-    $nama = "Nazara Maulita";
+    $nama = "Indrya Kumala";
     echo "$nama berkata \"Katakan namamu!\"";
     ?>
 </body>

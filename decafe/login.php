@@ -1,9 +1,9 @@
 <?php
-    //session_start();
-    if(!empty($_SESSION['username_decafe'])){
-        header('location:home');
-    }
-    ?>
+//session_start();
+if (!empty($_SESSION['username_decafe'])) {
+    header('location:home');
+}
+?>
 
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
@@ -183,14 +183,16 @@
             <h1 class="h3 mb-3 fw-normal text-center">Please Login</h1>
 
             <div class="form-floating">
-                <input name="username" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+                <input name="username" type="email" class="form-control" id="floatingInput"
+                    placeholder="name@example.com" required>
                 <label for="floatingInput">Email address</label>
                 <div class="invalid-feedback">
                     Masukkan email yang valid
                 </div>
             </div>
             <div class="form-floating">
-                <input name="password"  type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password"
+                    required>
                 <label for="floatingPassword">Password</label>
                 <div class="invalid-feedback">
                     Masukkan password
@@ -209,27 +211,27 @@
     </main>
     <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
-(() => {
-  'use strict'
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict'
 
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  const forms = document.querySelectorAll('.needs-validation')
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.needs-validation')
 
-  // Loop over them and prevent submission
-  Array.from(forms).forEach(form => {
-    form.addEventListener('submit', event => {
-      if (!form.checkValidity()) {
-        event.preventDefault()
-        event.stopPropagation()
-      }
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
 
-      form.classList.add('was-validated')
-    }, false)
-  })
-})()
-</script>
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
 </body>
 
 </html>

@@ -11,20 +11,10 @@ require 'cek.php';
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Stock Item</title>
+    <title>Kelola Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <style>
-        .zoomable {
-            width: 100px;
-        }
-
-        .zoomable:hover {
-            transform: scale(2.5);
-            transition: 0.3s ease;
-        }
-    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -68,85 +58,63 @@ require 'cek.php';
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Exit Product</h1>
-
+                    <h1 class="mt-4">Kelola Admin</h1>
 
                     <div class="card mb-4">
                         <div class="card-header">
                             <!-- Button to Open the Modal -->
                             <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#ModalAddExitProduk">
-                                Add Exit Product
+                                data-target="#ModalAddProduk">
+                                Add Admin
                             </button>
                         </div>
                         <div class="card-body">
+
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspasing="0">
+                                <table class="table table-bordered" id="mauexport" width="100%" cellspasing="0">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Picture</th>
+                                            <th>No</th>
+                                            <th>Email Admin</th>
                                             <th>Name Item</th>
-                                            <th>Totality</th>
-                                            <th>Recipient</th>
-                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
-                                        <?php
-                                        $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_keluar k, stok_produk s WHERE s.idproduk = k.idproduk");
-                                        while ($data = mysqli_fetch_array($ambilsemuadatastok)) {
-                                            $idk = $data['idkeluar'];
-                                            $idproduk = $data['idproduk'];
-                                            $tanggal = $data['tanggal'];
-                                            $namaproduk = $data['nama_produk'];
-                                            $qty = $data['qty'];
-                                            $penerima = $data['penerima'];
 
-                                             // cek ada gambar atau tidak
-                                             $gambar = $data['image']; // ambil gambar
-                                             if ($gambar == null) {
-                                                 //jika tidak ada gambar
-                                                 $image = "No Photo";
-                                             } else {
-                                                 //jika ada gambar
-                                                 $image = '<img src="image/' . $gambar . '" class="zoomable">';
-                                             }
- 
+                                        <?php
+                                        $ambilsemuadataadmin = mysqli_query($conn, "SELECT * FROM  login");
+                                        $i = 1;
+                                        while ($data = mysqli_fetch_array($ambilsemuadataadmin)) {
+                                            $email = $data['email'];
+                                            $iduser = $data['iduser'];
+                                            $pw = $data['password'];
+
+
 
                                             ?>
+
                                             <tr>
                                                 <td>
-                                                    <?= $tanggal ?>
+                                                    <?= $i++; ?>
                                                 </td>
                                                 <td>
-                                                    <?= $image ?>
-                                                </td>
-                                                <td>
-                                                    <?= $namaproduk; ?>
-                                                </td>
-                                                <td>
-                                                    <?= $qty; ?>
-                                                </td>
-                                                <td>
-                                                    <?= $penerima; ?>
+                                                    <?= $email; ?>
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-warning" data-toggle="modal"
-                                                        data-target="#edit<?= $idk; ?>">
+                                                        data-target="#edit<?= $iduser; ?>">
                                                         Edit
                                                     </button>
                                                     <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#delete<?= $idk; ?>">
+                                                        data-target="#delete<?= $iduser; ?>">
                                                         Delete
                                                     </button>
                                                 </td>
                                             </tr>
 
-
                                             <!-- Edit Modal -->
-                                            <div class="modal fade" id="edit<?= $idk; ?>">
+                                            <div class="modal fade" id="edit<?= $iduser; ?>">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
 
@@ -158,19 +126,16 @@ require 'cek.php';
                                                         <!-- Modal body -->
                                                         <form method="post">
                                                             <div class="modal-body">
-                                                                <input type="text" name="penerima"
-                                                                    value="<?= $penerima; ?>" class="form-control"
-                                                                    required>
+                                                                <input type="text" name="emailadmin"
+                                                                    value="<?= $email; ?>" class="form-control"placeholder="Email"
+                                                                    required >
                                                                 <br>
-                                                                <input type="number" name="qty" value="<?= $qty; ?>"
-                                                                    class="form-control" required>
+                                                                <input type="password" name="passwordbaru" class="form-control" value="<?=$pw;?>" placeholder="Password">
                                                                 <br>
-                                                                <input type="hidden" name="idproduk"
-                                                                    value="<?= $idproduk; ?>">
-                                                                <br>
-                                                                <input type="hidden" name="idkeluar" value="<?= $idk; ?>">
+                                                                <input type="hidden" name="id"
+                                                                    value="<?= $iduser; ?>">
                                                                 <button type="submit" class="btn btn-primary"
-                                                                    name="updateprodukkeluar">Submit</button>
+                                                                    name="updateadmin">Submit</button>
                                                             </div>
                                                         </form>
 
@@ -185,7 +150,7 @@ require 'cek.php';
 
 
                                             <!-- Delete Modal -->
-                                            <div class="modal fade" id="delete<?= $idk; ?>">
+                                            <div class="modal fade" id="delete<?= $iduser; ?>">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
 
@@ -200,16 +165,13 @@ require 'cek.php';
                                                         <form method="post">
                                                             <div class="modal-body">
                                                                 Apakah Anda yakin ingin menghapus
-                                                                <?= $namaproduk; ?>?
+                                                                <?= $email; ?>?
                                                                 <br>
-                                                                <input type="hidden" name="idproduk"
-                                                                    value="<?= $idproduk; ?>">
                                                                 <br>
-                                                                <input type="hidden" name="kty" value="<?= $qty; ?>">
-                                                                <br>
-                                                                <input type="hidden" name="idkeluar" value="<?= $idk; ?>">
+                                                                <input type="hidden" name="id"
+                                                                    value="<?= $iduser; ?>">
                                                                 <button type="submit" class="btn btn-danger"
-                                                                    name="deleteprodukkeluar">Delete</button>
+                                                                    name="deleteadmin">Delete</button>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -219,7 +181,11 @@ require 'cek.php';
                                             <?php
                                         }
                                         ;
+
+
+
                                         ?>
+
 
                                     </tbody>
                                 </table>
@@ -254,41 +220,24 @@ require 'cek.php';
     <script src="assets/demo/datatables-demo.js"></script>
 </body>
 
-<!-- The Modal -->
-<div class="modal fade" id="ModalAddExitProduk">
+<!-- Modal Tambah Produk -->
+<div class="modal fade" id="ModalAddProduk">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Tambah Produk Keluar</h4>
+                <h4 class="modal-title">Tambah Admin</h4>
             </div>
 
             <!-- Modal body -->
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 <div class="modal-body">
-
-                    <select name="produk" class="form-control">
-                        <?php
-                        $ambilsemuadata = mysqli_query($conn, "SELECT * FROM stok_produk");
-                        while ($fetcharray = mysqli_fetch_array($ambilsemuadata)) {
-                            $namaproduk = $fetcharray['nama_produk'];
-                            $idproduk = $fetcharray['idproduk'];
-                            ?>
-
-                            <option value="<?= $idproduk; ?>">
-                                <?= $namaproduk; ?>
-                            </option>
-                            <?php
-                        }
-                        ?>
-                    </select>
+                    <input type="email" name="email" placeholder="Email" class="form-control" required>
                     <br>
-                    <input type="number" name="qty" class="form-control" placeholder="Quantity" required>
+                    <input type="password" name="password" placeholder="Password" class="form-control" required>
                     <br>
-                    <input type="text" name="penerima" class="form-control" placeholder="Penerima" required>
-                    <br>
-                    <button type="submit" class="btn btn-primary" name="addprodukkeluar">Submit</button>
+                    <button type="submit" class="btn btn-primary" name="addadmin">Submit</button>
                 </div>
             </form>
 

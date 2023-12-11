@@ -6,7 +6,6 @@ $conn = mysqli_connect("localhost", "root", "", "db_nutrimanagenutri");
 
 //menambah produk baru
 if (isset($_POST['addnewproduk'])) {
-    $foto = $_POST['fotoproduk'];
     $namaproduk = $_POST['namaproduk'];
     $deskripsi = $_POST['deskripsi'];
     $stokproduk = $_POST['stok'];
@@ -19,14 +18,60 @@ if (isset($_POST['addnewproduk'])) {
     $ukuran = $_FILES['file']['size']; // mengambil size filenya
     $file_tmp = $_FILES['file']['tmp_name']; //mengambil lokasi file
 
+    //penamaan file -> enkripsi
+    $image = md5(uniqid($nama, true) . time()) . '.' . $ekstensi; //mengabungkan nama file yang diengkripsi dengan ekstensinya
+
     //penamaan file -> engkripsi
     $image = md5(uniqid($nama, true) . time()) . '.' . $ekstensi; //menggabungkan nama file yg diengkripsi dengan ekstensinya
-    $addtotable = mysqli_query($conn, "INSERT INTO stok_produk (foto, nama_produk, deskripsi, stok_produk) values ('$foto', '$namaproduk', '$deskripsi', $stokproduk)");
-    if ($addtotable) {
-        header('location:stok.php');
+
+    //validasi udah ada atau belum
+    $cek = mysqli_query($conn, "SELECT * FROM stok_produk WHERE nama_produk='$namaproduk'");
+    $hitung = mysqli_num_rows($cek);
+
+    if ($hitung < 1) {
+        //jika belum ada
+
+        //proses upload gambar
+        if (in_array($ekstensi, $allowed_extension) === true) {
+            //validasi ukuran filenya
+            if ($ukuran < 15000000) {
+                move_uploaded_file($file_tmp, 'image/' . $image);
+
+                $addtotable = mysqli_query($conn, "INSERT INTO stok_produk (image, nama_produk, deskripsi, stok_produk) values ('$image', '$namaproduk', '$deskripsi', '$stokproduk')");
+                if ($addtotable) {
+                    header('location:stok.php');
+                } else {
+                    echo 'Gagal';
+                    header('location:stok.php');
+                }
+            } else {
+                // kalau filenya lebih dari 1.5mb
+                echo '
+                <script>
+                alert("Ukuran terlau besar");
+                window.location.href="stok.php";
+                </script>
+                ';
+            }
+
+        } else {
+            // kalau file gambar tidak png/ jpg
+            echo '
+            <script>
+            alert("File harus png/jpg");
+            window.location.href="stok.php";
+            </script>
+            ';
+        }
+
     } else {
-        echo 'Gagal';
-        header('location:stok.php');
+        // jika sudah ada
+        echo '
+        <script>
+        alert("Nama produk sudah terdaftar");
+        window.location.href="stok.php";
+        </script>
+        ';
     }
 }
 ;
@@ -64,15 +109,26 @@ if (isset($_POST['addprodukkeluar'])) {
     $ambildata = mysqli_fetch_array($cekstoksekarang);
 
     $stoksekarang = $ambildata['stok_produk'];
-    $tambahakanstoksekarangdenganquantity = $stoksekarang - $qty;
 
-    $addtomasuk = mysqli_query($conn, "INSERT INTO produk_keluar (idproduk, penerima, qty) values ('$produk', '$penerima', '$qty')");
-    $updatestokmasuk = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$tambahakanstoksekarangdenganquantity' WHERE idproduk='$produk'");
-    if ($addtomasuk && $updatestokmasuk) {
-        header('location:keluar.php');
+    if ($stoksekarang >= $qty) {
+        // kalau produknya ckup
+        $tambahakanstoksekarangdenganquantity = $stoksekarang - $qty;
+
+        $addtomasuk = mysqli_query($conn, "INSERT INTO produk_keluar (idproduk, penerima, qty) values ('$produk', '$penerima', '$qty')");
+        $updatestokmasuk = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$tambahakanstoksekarangdenganquantity' WHERE idproduk='$produk'");
+        if ($addtomasuk && $updatestokmasuk) {
+            header('location:keluar.php');
+        } else {
+            echo 'Gagal';
+            header('location:keluar.php');
+        }
     } else {
-        echo 'Gagal';
-        header('location:keluar.php');
+        // kalau produknya tidak cukup
+        echo '
+    <script>
+    alert("Stok saat ini tidak mencukupi");
+    window.location.href="keluar.php";
+    </script>';
     }
 }
 
@@ -82,19 +138,49 @@ if (isset($_POST['updateproduk'])) {
     $namaproduk = $_POST['namaproduk'];
     $deskripsi = $_POST['deskripsi'];
 
-    $update = mysqli_query($conn, "UPDATE stok_produk SET nama_produk= '$namaproduk', deskripsi='$deskripsi' WHERE idproduk ='$idproduk'");
-    if ($update) {
-        header('location:stok.php');
-    } else {
-        echo 'Gagal';
-        header('location:stok.php');
-    }
+    //soal gambar
+    $allowed_extension = array('png', 'jpg');
+    $nama = $_FILES['file']['name']; //mengambil nama gambar
+    $dot = explode('.', $nama);
+    $ekstensi = strtolower(end($dot)); // mengambil ekstensi
+    $ukuran = $_FILES['file']['size']; // mengambil size filenya
+    $file_tmp = $_FILES['file']['tmp_name']; //mengambil lokasi file
 
+    //penamaan file -> enkripsi
+    $image = md5(uniqid($nama, true) . time()) . '.' . $ekstensi; //mengabungkan nama file yang diengkripsi dengan ekstensinya
+
+
+    if ($ukuran == 0) {
+        //jika tidak ingin diupload
+        $update = mysqli_query($conn, "UPDATE stok_produk SET nama_produk= '$namaproduk', deskripsi='$deskripsi' WHERE idproduk ='$idproduk'");
+        if ($update) {
+            header('location:stok.php');
+        } else {
+            echo 'Gagal';
+            header('location:stok.php');
+        }
+    } else {
+        // jika ingin diupload
+        move_uploaded_file($file_tmp, 'image/' . $image);
+        $update = mysqli_query($conn, "UPDATE stok_produk SET nama_produk= '$namaproduk', deskripsi='$deskripsi', image='$image' WHERE idproduk ='$idproduk'");
+        if ($update) {
+            header('location:stok.php');
+        } else {
+            echo 'Gagal';
+            header('location:stok.php');
+        }
+
+    }
 }
 
 // menghapus produk dari stok
 if (isset($_POST['deleteproduk'])) {
-    $idproduk = $_POST['idproduk'];
+    $idproduk = $_POST['idproduk']; //idproduk
+
+    $gambar = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='idproduk'");
+    $get = mysqli_fetch_array($gambar);
+    $image = 'image/' . $get['image'];
+    unlink($image);
 
     $hapus = mysqli_query($conn, "DELETE FROM stok_produk WHERE idproduk='$idproduk'");
     if ($hapus) {
@@ -155,16 +241,126 @@ if (isset($_POST['deleteprodukmasuk'])) {
     $data = mysqli_fetch_array($getdatastok);
     $stok = $data['stok_produk'];
 
-    $selisih = $stok-$qty;
+    $selisih = $stok - $qty;
 
-    $update = mysqli_query($conn,"UPDATE stok_produk set stok_produk='$selisih' WHERE idproduk='$idproduk'");
-    $hapusdata = mysqli_query($conn,"DELETE FROM produk_masuk WHERE idmasuk='$idm'");
+    $update = mysqli_query($conn, "UPDATE stok_produk set stok_produk='$selisih' WHERE idproduk='$idproduk'");
+    $hapusdata = mysqli_query($conn, "DELETE FROM produk_masuk WHERE idmasuk='$idm'");
 
-    
+
     if ($update && $hapusdata) {
         header('location:masuk.php');
     } else {
         header('location:masuk.php');
+    }
+}
+
+
+//mengubah data produk keluar
+if (isset($_POST['updateprodukkeluar'])) {
+    $idproduk = $_POST['idproduk'];
+    $idk = $_POST['idkeluar'];
+    $penerima = $_POST['penerima'];
+    $qty = $_POST['qty'];
+
+    $lihatstok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$idproduk'");
+    $stoknya = mysqli_fetch_array($lihatstok);
+    $stokskrg = $stoknya['stok_produk'];
+
+    $qtyskrg = mysqli_query($conn, "SELECT * FROM produk_keluar WHERE idkeluar='$idk'");
+    $qtynya = mysqli_fetch_array($qtyskrg);
+    $qtyskrg = $qtynya['qty'];
+
+    if ($qty > $qtyskrg) {
+        $selisih = $qty - $qtyskrg;
+        $kurangin = $stokskrg - $selisih;
+        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$kurangin' WHERE idproduk='$idproduk'");
+        $updatenya = mysqli_query($conn, "UPDATE produk_keluar set qty='$qty', penerima='$penerima' WHERE idkeluar='$idk'");
+        if ($kurangistoknya && $updatenya) {
+            header('location:keluar.php');
+        } else {
+            echo 'Gagal';
+            header('location:keluar.php');
+        }
+    } else {
+        $selisih = $qtyskrg - $qty;
+        $kurangin = $stokskrg + $selisih;
+        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$kurangin' WHERE idproduk='$idproduk'");
+        $updatenya = mysqli_query($conn, "UPDATE produk_keluar set qty='$qty', penerima='$penerima' WHERE idkeluar='$idk'");
+        if ($kurangistoknya && $updatenya) {
+            header('location:keluar.php');
+        } else {
+            echo 'Gagal';
+            header('location:keluar.php');
+        }
+    }
+}
+
+// menghapus produk keluar
+if (isset($_POST['deleteprodukkeluar'])) {
+    $idproduk = $_POST['idproduk'];
+    $qty = $_POST['kty'];
+    $idk = $_POST['idkeluar'];
+
+    $getdatastok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$idproduk'");
+    $data = mysqli_fetch_array($getdatastok);
+    $stok = $data['stok_produk'];
+
+    $selisih = $stok + $qty;
+
+    $update = mysqli_query($conn, "UPDATE stok_produk set stok_produk='$selisih' WHERE idproduk='$idproduk'");
+    $hapusdata = mysqli_query($conn, "DELETE FROM produk_keluar WHERE idkeluar='$idk'");
+
+
+    if ($update && $hapusdata) {
+        header('location:keluar.php');
+    } else {
+        header('location:keluar.php');
+    }
+}
+
+// menambah admin baru
+if (isset($_POST['addadmin'])) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $queryinsert = mysqli_query($conn, "INSERT INTO login (email, password) values ('$email', '$password')");
+
+    if ($queryinsert) {
+        // if berhasil
+        header('location:admin.php');
+    } else {
+        // kalau gagal insert ke db
+        header('location:admin.php');
+    }
+}
+
+// edit data admin
+if (isset($_POST['updateadmin'])) {
+    $emailbaru = $_POST['emailadmin'];
+    $passwordbaru = $_POST['passwordbaru'];
+    $idnya = $_POST['id'];
+
+    $queryupdate = mysqli_query($conn, "UPDATE login SET email='$emailbaru', password='$passwordbaru' WHERE iduser='$idnya'");
+
+    if ($queryupdate) {
+        header('location:admin.php');
+    } else {
+        header('location:admin.php');
+
+    }
+}
+
+// hapus admin
+if (isset($_POST['deleteadmin'])) {
+    $id = $_POST['id'];
+
+    $querydelete = mysqli_query($conn, "DELETE FROM login WHERE iduser='$id'");
+
+    if ($querydelete) {
+        header('location:admin.php');
+    } else {
+        header('location:admin.php');
+
     }
 }
 ?>

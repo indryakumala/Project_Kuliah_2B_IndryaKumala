@@ -15,6 +15,16 @@ require 'cek.php';
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .zoomable {
+            width: 100px;
+        }
+
+        .zoomable:hover {
+            transform: scale(2.5);
+            transition: 0.3s ease;
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -44,6 +54,10 @@ require 'cek.php';
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Exit Product
                         </a>
+                        <a class="nav-link" href="admin.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Kelola Admin
+                        </a>
                         <a class="nav-link" href="logout.php">
                             Logout
                         </a>
@@ -71,6 +85,7 @@ require 'cek.php';
                                     <thead>
                                         <tr>
                                             <th>Date</th>
+                                            <th>Picture</th>
                                             <th>Name Item</th>
                                             <th>Totality</th>
                                             <th>Description</th>
@@ -89,10 +104,23 @@ require 'cek.php';
                                             $qty = $data['qty'];
                                             $keterangan = $data['keterangan'];
 
+                                            // cek ada gambar atau tidak
+                                            $gambar = $data['image']; // ambil gambar
+                                            if ($gambar == null) {
+                                                //jika tidak ada gambar
+                                                $image = "No Photo";
+                                            } else {
+                                                //jika ada gambar
+                                                $image = '<img src="image/' . $gambar . '" class="zoomable">';
+                                            }
+
                                             ?>
                                             <tr>
                                                 <td>
                                                     <?= $tanggal ?>
+                                                </td>
+                                                <td>
+                                                    <?= $image ?>
                                                 </td>
                                                 <td>
                                                     <?= $namaproduk; ?>
@@ -105,18 +133,18 @@ require 'cek.php';
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-warning" data-toggle="modal"
-                                                        data-target="#edit<?= $idproduk; ?>">
+                                                        data-target="#edit<?= $idm; ?>">
                                                         Edit
                                                     </button>
                                                     <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#delete<?= $idproduk; ?>">
+                                                        data-target="#delete<?= $idm; ?>">
                                                         Delete
                                                     </button>
                                                 </td>
                                             </tr>
 
                                             <!-- Edit Modal -->
-                                            <div class="modal fade" id="edit<?= $idproduk; ?>">
+                                            <div class="modal fade" id="edit<?= $idm; ?>">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
 
@@ -155,7 +183,7 @@ require 'cek.php';
 
 
                                             <!-- Delete Modal -->
-                                            <div class="modal fade" id="delete<?= $idproduk; ?>">
+                                            <div class="modal fade" id="delete<?= $idm; ?>">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
 
@@ -171,7 +199,6 @@ require 'cek.php';
                                                             <div class="modal-body">
                                                                 Apakah Anda yakin ingin menghapus
                                                                 <?= $namaproduk; ?>?
-                                                                <br>
                                                                 <br>
                                                                 <input type="hidden" name="idproduk"
                                                                     value="<?= $idproduk; ?>">

@@ -15,6 +15,21 @@ require 'cek.php';
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        .zoomable {
+            width: 100px;
+        }
+
+        .zoomable:hover {
+            transform: scale(2.5);
+            transition: 0.3s ease;
+        }
+
+        a{
+            text-decoration: black ;
+            color: black;
+        }
+    </style>
 </head>
 
 <body class="sb-nav-fixed">
@@ -44,6 +59,10 @@ require 'cek.php';
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Exit Product
                         </a>
+                        <a class="nav-link" href="admin.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Kelola Admin
+                        </a>
                         <a class="nav-link" href="logout.php">
                             Logout
                         </a>
@@ -56,7 +75,6 @@ require 'cek.php';
                 <div class="container-fluid px-4">
                     <h1 class="mt-4">Stock Item</h1>
 
-
                     <div class="card mb-4">
                         <div class="card-header">
                             <!-- Button to Open the Modal -->
@@ -64,10 +82,27 @@ require 'cek.php';
                                 data-target="#ModalAddProduk">
                                 Add Product
                             </button>
+                            <a href="export.php" class="btn btn-info">Export Data</a>
                         </div>
                         <div class="card-body">
+
+                            <?php
+                            $ambildatastok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE stok_produk < 1");
+                            while ($fetch = mysqli_fetch_array($ambildatastok)) {
+                                $produk = $fetch['nama_produk'];
+                                ?>
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                    <strong>Perhatian!</strong> Stok
+                                    <?= $produk; ?> telah Habis
+                                </div>
+
+                                <?php
+                            }
+                            ?>
+
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspasing="0">
+                                <table class="table table-bordered" id="mauexport" width="100%" cellspasing="0">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -85,13 +120,20 @@ require 'cek.php';
                                         $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM stok_produk");
                                         $i = 1;
                                         while ($data = mysqli_fetch_array($ambilsemuadatastok)) {
-                                            $foto = $data['foto'];
                                             $namaproduk = $data['nama_produk'];
                                             $deskripsi = $data['deskripsi'];
                                             $stok = $data['stok_produk'];
                                             $idproduk = $data['idproduk'];
 
-
+                                            // cek ada gambar atau tidak
+                                            $gambar = $data['image']; // ambil gambar
+                                            if ($gambar == null) {
+                                                //jika tidak ada gambar
+                                                $image = "No Photo";
+                                            } else {
+                                                //jika ada gambar
+                                                $image = '<img src="image/' . $gambar . '" class="zoomable">';
+                                            }
                                             ?>
 
                                             <tr>
@@ -99,13 +141,10 @@ require 'cek.php';
                                                     <?= $i++; ?>
                                                 </td>
                                                 <td>
-                                                    <div style="width: 90px">
-                                                        <img src="assets/img/ <?php echo $row['foto'] ?>"
-                                                            class="img-thumbnail" alt="...">
-                                                    </div>
+                                                    <?= $image; ?>
                                                 </td>
-                                                <td>
-                                                    <?= $namaproduk; ?>
+                                                <td><strong>
+                                                    <a href="detail.php?id=<?=$idproduk;?>"><?= $namaproduk; ?></a></strong>
                                                 </td>
                                                 <td>
                                                     <?= $deskripsi; ?>
@@ -115,18 +154,18 @@ require 'cek.php';
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-warning" data-toggle="modal"
-                                                        data-target="#edit<?=$idproduk;?>">
+                                                        data-target="#edit<?= $idproduk; ?>">
                                                         Edit
                                                     </button>
                                                     <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#delete<?=$idproduk;?>">
+                                                        data-target="#delete<?= $idproduk; ?>">
                                                         Delete
                                                     </button>
                                                 </td>
                                             </tr>
 
                                             <!-- Edit Modal -->
-                                            <div class="modal fade" id="edit<?=$idproduk;?>">
+                                            <div class="modal fade" id="edit<?= $idproduk; ?>">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
 
@@ -136,15 +175,20 @@ require 'cek.php';
                                                         </div>
 
                                                         <!-- Modal body -->
-                                                        <form method="post">
+                                                        <form method="post" enctype="multipart/form-data">
                                                             <div class="modal-body">
+                                                                <input type="file" name="file" class="form-control">
+                                                                <br>
                                                                 <input type="text" name="namaproduk"
-                                                                    value="<?=$namaproduk;?>" class="form-control" required>
+                                                                    value="<?= $namaproduk; ?>" class="form-control"
+                                                                    required>
                                                                 <br>
-                                                                <input type="text" name="deskripsi" value="<?=$deskripsi;?>"
-                                                                    class="form-control" required>
+                                                                <input type="text" name="deskripsi"
+                                                                    value="<?= $deskripsi; ?>" class="form-control"
+                                                                    required>
                                                                 <br>
-                                                                <input type="hidden" name="idproduk" value="<?=$idproduk;?>">
+                                                                <input type="hidden" name="idproduk"
+                                                                    value="<?= $idproduk; ?>">
                                                                 <button type="submit" class="btn btn-primary"
                                                                     name="updateproduk">Submit</button>
                                                             </div>
@@ -159,25 +203,28 @@ require 'cek.php';
                                                 </div>
                                             </div>
 
-                                            
+
                                             <!-- Delete Modal -->
-                                            <div class="modal fade" id="delete<?=$idproduk;?>">
+                                            <div class="modal fade" id="delete<?= $idproduk; ?>">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
 
                                                         <!-- Modal Header -->
                                                         <div class="modal-header">
                                                             <h4 class="modal-title">Delete Product</h4>
-                                                            <button type="button" class="close"data-dismiss="modal">&times;</button>
+                                                            <button type="button" class="close"
+                                                                data-dismiss="modal">&times;</button>
                                                         </div>
 
                                                         <!-- Modal body -->
                                                         <form method="post">
                                                             <div class="modal-body">
-                                                                Apakah Anda yakin ingin menghapus <?=$namaproduk;?>?
+                                                                Apakah Anda yakin ingin menghapus
+                                                                <?= $namaproduk; ?>?
                                                                 <br>
                                                                 <br>
-                                                                <input type="hidden" name="idproduk"value="<?=$idproduk;?>">
+                                                                <input type="hidden" name="idproduk"
+                                                                    value="<?= $idproduk; ?>">
                                                                 <button type="submit" class="btn btn-danger"
                                                                     name="deleteproduk">Delete</button>
                                                             </div>
@@ -187,9 +234,10 @@ require 'cek.php';
                                             </div>
 
                                             <?php
-                                        };
+                                        }
+                                        ;
 
-                                        
+
 
                                         ?>
 
@@ -227,7 +275,7 @@ require 'cek.php';
     <script src="assets/demo/datatables-demo.js"></script>
 </body>
 
-<!-- The Modal -->
+<!-- Modal Tambah Produk -->
 <div class="modal fade" id="ModalAddProduk">
     <div class="modal-dialog">
         <div class="modal-content">

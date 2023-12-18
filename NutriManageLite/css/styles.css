@@ -1,4 +1,4 @@
-@charset "UTF-8";
+@charset "utf-8";
 /*!
 * Start Bootstrap - SB Admin v7.0.7 (https://startbootstrap.com/template/sb-admin)
 * Copyright 2013-2023 Start Bootstrap
@@ -93,15 +93,17 @@
 
 body {
   margin: 0;
-  font-family: var(--bs-body-font-family);
-  font-size: var(--bs-body-font-size);
-  font-weight: var(--bs-body-font-weight);
-  line-height: var(--bs-body-line-height);
-  color: var(--bs-body-color);
-  text-align: var(--bs-body-text-align);
-  background-color: var(--bs-body-bg);
-  -webkit-text-size-adjust: 100%;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fef8f8;
+  text-align: left;
+  background-color: rgb(125, 187, 96);
+}
+
+[tabindex="-1"]:focus:not(:focus-visible){
+  outline: 0 !important;
 }
 
 hr {
@@ -380,10 +382,11 @@ select:disabled {
 }
 
 button,
-[type=button],
-[type=reset],
-[type=submit] {
+[type="button"],
+[type="reset"],
+[type="submit"] {
   -webkit-appearance: button;
+  appearance: button;
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
@@ -441,8 +444,8 @@ legend + * {
 
 [type=search] {
   outline-offset: -2px;
-  -webkit-appearance: textfield;
 }
+
 
 /* rtl:raw:
 [type="tel"],
@@ -462,7 +465,6 @@ legend + * {
 
 ::file-selector-button {
   font: inherit;
-  -webkit-appearance: button;
 }
 
 output {
@@ -4220,7 +4222,7 @@ textarea.form-control-lg {
 .card-body {
   flex: 1 1 auto;
   padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
-  color: var(--bs-card-color);
+  color: black;
 }
 
 .card-title {
@@ -4244,7 +4246,7 @@ textarea.form-control-lg {
   padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x);
   margin-bottom: 0;
   color: var(--bs-card-cap-color);
-  background-color: var(--bs-card-cap-bg);
+  background-color: rgb(30, 29, 29);
   border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color);
 }
 .card-header:first-child {

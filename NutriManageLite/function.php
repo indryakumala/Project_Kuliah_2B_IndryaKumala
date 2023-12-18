@@ -1,5 +1,4 @@
 <?php
-session_start();
 
 // Membuat koneksi ke database
 $conn = mysqli_connect("localhost", "root", "", "db_nutrimanagenutri");
@@ -37,7 +36,7 @@ if (isset($_POST['addnewproduk'])) {
             if ($ukuran < 15000000) {
                 move_uploaded_file($file_tmp, 'image/' . $image);
 
-                $addtotable = mysqli_query($conn, "INSERT INTO stok_produk (image, nama_produk, deskripsi, stok_produk) values ('$image', '$namaproduk', '$deskripsi', '$stokproduk')");
+                $addtotable = mysqli_query($conn, "INSERT INTO stok_produk (image, nama_produk, deskripsi, stok) values ('$image', '$namaproduk', '$deskripsi', '$stok')");
                 if ($addtotable) {
                     header('location:stok.php');
                 } else {
@@ -78,18 +77,18 @@ if (isset($_POST['addnewproduk'])) {
 
 // menambah produk masuk
 if (isset($_POST['produkmasuk'])) {
-    $produk = $_POST['produk'];
+    $idproduk = $_POST['idproduk'];
     $keterangan = $_POST['keterangan'];
     $qty = $_POST['qty'];
 
-    $cekstoksekarang = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$produk'");
+    $cekstoksekarang = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$idproduk'");
     $ambildata = mysqli_fetch_array($cekstoksekarang);
 
-    $stoksekarang = $ambildata['stok_produk'];
+    $stoksekarang = $ambildata['stok'];
     $tambahakanstoksekarangdenganquantity = $stoksekarang + $qty;
 
-    $addtomasuk = mysqli_query($conn, "INSERT INTO produk_masuk (idproduk, keterangan, qty) values ('$produk', '$keterangan', '$qty')");
-    $updatestokmasuk = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$tambahakanstoksekarangdenganquantity' WHERE idproduk='$produk'");
+    $addtomasuk = mysqli_query($conn, "INSERT INTO produk_masuk (idproduk, keterangan, qty) values ('$idproduk', '$keterangan', '$qty')");
+    $updatestokmasuk = mysqli_query($conn, "UPDATE stok_produk SET stok='$tambahakanstoksekarangdenganquantity' WHERE idproduk='$produk'");
     if ($addtomasuk && $updatestokmasuk) {
         header('location:masuk.php');
     } else {
@@ -101,21 +100,21 @@ if (isset($_POST['produkmasuk'])) {
 
 // menambah produk keluar
 if (isset($_POST['addprodukkeluar'])) {
-    $produk = $_POST['produk'];
+    $idproduk = $_POST['idproduk'];
     $penerima = $_POST['penerima'];
     $qty = $_POST['qty'];
 
-    $cekstoksekarang = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$produk'");
+    $cekstoksekarang = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$idproduk'");
     $ambildata = mysqli_fetch_array($cekstoksekarang);
 
-    $stoksekarang = $ambildata['stok_produk'];
+    $stoksekarang = $ambildata['stok'];
 
     if ($stoksekarang >= $qty) {
         // kalau produknya ckup
         $tambahakanstoksekarangdenganquantity = $stoksekarang - $qty;
 
-        $addtomasuk = mysqli_query($conn, "INSERT INTO produk_keluar (idproduk, penerima, qty) values ('$produk', '$penerima', '$qty')");
-        $updatestokmasuk = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$tambahakanstoksekarangdenganquantity' WHERE idproduk='$produk'");
+        $addtomasuk = mysqli_query($conn, "INSERT INTO produk_keluar (idproduk, penerima, qty) values ('$idproduk', '$penerima', '$qty')");
+        $updatestokmasuk = mysqli_query($conn, "UPDATE stok_produk SET stok='$tambahakanstoksekarangdenganquantity' WHERE idproduk='$idproduk'");
         if ($addtomasuk && $updatestokmasuk) {
             header('location:keluar.php');
         } else {
@@ -135,7 +134,7 @@ if (isset($_POST['addprodukkeluar'])) {
 //update info barang
 if (isset($_POST['updateproduk'])) {
     $idproduk = $_POST['idproduk'];
-    $namaproduk = $_POST['namaproduk'];
+    $namaproduk = $_POST['nama_produk'];
     $deskripsi = $_POST['deskripsi'];
 
     //soal gambar
@@ -200,7 +199,7 @@ if (isset($_POST['updateprodukmasuk'])) {
 
     $lihatstok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$idproduk'");
     $stoknya = mysqli_fetch_array($lihatstok);
-    $stokskrg = $stoknya['stok_produk'];
+    $stokskrg = $stoknya['stok'];
 
     $qtyskrg = mysqli_query($conn, "SELECT * FROM produk_masuk WHERE idmasuk='$idm'");
     $qtynya = mysqli_fetch_array($qtyskrg);
@@ -209,7 +208,7 @@ if (isset($_POST['updateprodukmasuk'])) {
     if ($qty > $qtyskrg) {
         $selisih = $qty - $qtyskrg;
         $kurangin = $stokskrg - $selisih;
-        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$kurangin' WHERE idproduk='$idproduk'");
+        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok='$kurangin' WHERE idproduk='$idproduk'");
         $updatenya = mysqli_query($conn, "UPDATE produk_masuk set qty='$qty', keterangan='$deskripsi' WHERE idmasuk='$idm'");
         if ($kurangistoknya && $updatenya) {
             header('location:masuk.php');
@@ -220,7 +219,7 @@ if (isset($_POST['updateprodukmasuk'])) {
     } else {
         $selisih = $qtyskrg - $qty;
         $kurangin = $stokskrg + $selisih;
-        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$kurangin' WHERE idproduk='$idproduk'");
+        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok='$kurangin' WHERE idproduk='$idproduk'");
         $updatenya = mysqli_query($conn, "UPDATE produk_masuk set qty='$qty', keterangan='$deskripsi' WHERE idmasuk='$idm'");
         if ($kurangistoknya && $updatenya) {
             header('location:masuk.php');
@@ -234,16 +233,16 @@ if (isset($_POST['updateprodukmasuk'])) {
 // menghapus produk masuk
 if (isset($_POST['deleteprodukmasuk'])) {
     $idproduk = $_POST['idproduk'];
-    $qty = $_POST['kty'];
+    $qty = $_POST['qty'];
     $idm = $_POST['idmasuk'];
 
     $getdatastok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$idproduk'");
     $data = mysqli_fetch_array($getdatastok);
-    $stok = $data['stok_produk'];
+    $stok = $data['stok'];
 
     $selisih = $stok - $qty;
 
-    $update = mysqli_query($conn, "UPDATE stok_produk set stok_produk='$selisih' WHERE idproduk='$idproduk'");
+    $update = mysqli_query($conn, "UPDATE stok_produk set stok='$selisih' WHERE idproduk='$idproduk'");
     $hapusdata = mysqli_query($conn, "DELETE FROM produk_masuk WHERE idmasuk='$idm'");
 
 
@@ -264,7 +263,7 @@ if (isset($_POST['updateprodukkeluar'])) {
 
     $lihatstok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$idproduk'");
     $stoknya = mysqli_fetch_array($lihatstok);
-    $stokskrg = $stoknya['stok_produk'];
+    $stokskrg = $stoknya['stok'];
 
     $qtyskrg = mysqli_query($conn, "SELECT * FROM produk_keluar WHERE idkeluar='$idk'");
     $qtynya = mysqli_fetch_array($qtyskrg);
@@ -273,7 +272,7 @@ if (isset($_POST['updateprodukkeluar'])) {
     if ($qty > $qtyskrg) {
         $selisih = $qty - $qtyskrg;
         $kurangin = $stokskrg - $selisih;
-        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$kurangin' WHERE idproduk='$idproduk'");
+        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok='$kurangin' WHERE idproduk='$idproduk'");
         $updatenya = mysqli_query($conn, "UPDATE produk_keluar set qty='$qty', penerima='$penerima' WHERE idkeluar='$idk'");
         if ($kurangistoknya && $updatenya) {
             header('location:keluar.php');
@@ -284,7 +283,7 @@ if (isset($_POST['updateprodukkeluar'])) {
     } else {
         $selisih = $qtyskrg - $qty;
         $kurangin = $stokskrg + $selisih;
-        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok_produk='$kurangin' WHERE idproduk='$idproduk'");
+        $kurangistoknya = mysqli_query($conn, "UPDATE stok_produk SET stok='$kurangin' WHERE idproduk='$idproduk'");
         $updatenya = mysqli_query($conn, "UPDATE produk_keluar set qty='$qty', penerima='$penerima' WHERE idkeluar='$idk'");
         if ($kurangistoknya && $updatenya) {
             header('location:keluar.php');
@@ -298,7 +297,7 @@ if (isset($_POST['updateprodukkeluar'])) {
 // menghapus produk keluar
 if (isset($_POST['deleteprodukkeluar'])) {
     $idproduk = $_POST['idproduk'];
-    $qty = $_POST['kty'];
+    $qty = $_POST['qty'];
     $idk = $_POST['idkeluar'];
 
     $getdatastok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE idproduk='$idproduk'");
@@ -307,7 +306,7 @@ if (isset($_POST['deleteprodukkeluar'])) {
 
     $selisih = $stok + $qty;
 
-    $update = mysqli_query($conn, "UPDATE stok_produk set stok_produk='$selisih' WHERE idproduk='$idproduk'");
+    $update = mysqli_query($conn, "UPDATE stok_produk set stok='$selisih' WHERE idproduk='$idproduk'");
     $hapusdata = mysqli_query($conn, "DELETE FROM produk_keluar WHERE idkeluar='$idk'");
 
 
@@ -363,4 +362,6 @@ if (isset($_POST['deleteadmin'])) {
 
     }
 }
+
+
 ?>

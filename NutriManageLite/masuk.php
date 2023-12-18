@@ -1,6 +1,5 @@
 <?php
 require 'function.php';
-require 'cek.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,6 +11,7 @@ require 'cek.php';
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Stock Item</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -34,41 +34,34 @@ require 'cek.php';
                 class="fas fa-bars"></i></button>
     </nav>
     <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <a class="nav-link" href="index.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Dashboard
-                        </a>
-                        <a class="nav-link" href="stok.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Stock Item
-                        </a>
-                        <a class="nav-link" href="masuk.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Incoming Product
-                        </a>
-                        <a class="nav-link" href="keluar.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Exit Product
-                        </a>
-                        <a class="nav-link" href="admin.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Kelola Admin
-                        </a>
-                        <a class="nav-link" href="logout.php">
-                            Logout
-                        </a>
-                    </div>
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <a class="nav-link" href="stok.php">
+                        <div class="sb-nav-link-icon"><i class="bi bi-bag"></i></div>
+                        Stock Item
+                    </a>
+                    <a class="nav-link" href="masuk.php">
+                        <div class="sb-nav-link-icon"><i class="bi bi-cloud-arrow-down-fill"></i></div>
+                        Incoming Product
+                    </a>
+                    <a class="nav-link" href="keluar.php">
+                        <div class="sb-nav-link-icon"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+                        Exit Product
+                    </a>
+                    <a class="nav-link" href="logout.php">
+                        <div class="sb-nav-link-icon"><i class="bi bi-box-arrow-right"></i></div>
+                        Logout
+                    </a>
                 </div>
-            </nav>
-        </div>
+            </div>
+        </nav>
+    </div>
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Incoming Product</h1>
+                    <h1 class="mt-4 mb-4">Produk Masuk</h1>
 
 
                     <div class="card mb-4">
@@ -78,10 +71,30 @@ require 'cek.php';
                                 data-target="#ModalAddProdukMasuk">
                                 Add Imcoming Product
                             </button>
+                            <br>
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <form method="post" class="form-inline">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                Tanggal Mulai: <input type="date" name="tgl_mulai" class="form-control">
+                                            </div>
+                                            <div class="col-auto">
+                                                Tanggal Selesai: <input type="date" name="tgl_selesai"
+                                                    class="form-control ml-1">
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="submit" name="filter_tgl" class="btn btn-info ml-1"
+                                                    style="margin-top: 25px;">Filter</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspasing="0">
+                                <table class="table table-bordered" id="tablemasuk" width="100%" cellspasing="0">
                                     <thead>
                                         <tr>
                                             <th>Date</th>
@@ -95,7 +108,28 @@ require 'cek.php';
                                     <tbody>
 
                                         <?php
-                                        $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_masuk m, stok_produk s WHERE s.idproduk = m.idproduk");
+
+                                        if (isset($_POST['filter_tgl'])) {
+                                            $mulai = $_POST['tgl_mulai'];
+                                            $selesai = $_POST['tgl_selesai'];
+
+                                            // Ubah format tanggal untuk memastikan format yang benar dalam query
+                                            $mulai = date('Y-m-d', strtotime($mulai));
+                                            $selesai = date('Y-m-d', strtotime($selesai));
+
+                                            if ($mulai != '' && $selesai != '') {
+                                                // Tambahkan interval satu hari ke tanggal selesai agar mencakup rentang tanggal yang dipilih
+                                                $selesai = date('Y-m-d', strtotime($selesai . ' +1 day'));
+
+                                                $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_masuk m, stok_produk s WHERE s.idproduk = m.idproduk and tanggal BETWEEN '$mulai' AND '$selesai'");
+                                            } else {
+                                                $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_masuk m, stok_produk s WHERE s.idproduk = m.idproduk");
+                                            }
+                                        } else {
+                                            $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_masuk m, stok_produk s WHERE s.idproduk = m.idproduk");
+                                        }
+
+
                                         while ($data = mysqli_fetch_array($ambilsemuadatastok)) {
                                             $idproduk = $data['idproduk'];
                                             $idm = $data['idmasuk'];
@@ -203,7 +237,7 @@ require 'cek.php';
                                                                 <input type="hidden" name="idproduk"
                                                                     value="<?= $idproduk; ?>">
                                                                 <br>
-                                                                <input type="hidden" name="kty" value="<?= $qty; ?>">
+                                                                <input type="hidden" name="qty" value="<?= $qty; ?>">
                                                                 <br>
                                                                 <input type="hidden" name="idmasuk" value="<?= $idm; ?>">
                                                                 <button type="submit" class="btn btn-danger"
@@ -261,7 +295,7 @@ require 'cek.php';
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Tambah Produk Masuk</h4>
+                <h4 class="modal-title text-black">Tambah Produk Masuk</h4>
             </div>
 
             <!-- Modal body -->

@@ -42,7 +42,7 @@ require 'cek.php';
                     while ($data = mysqli_fetch_array($ambilsemuadatastok)) {
                         $namaproduk = $data['nama_produk'];
                         $deskripsi = $data['deskripsi'];
-                        $stok = $data['stok_produk'];
+                        $stok = $data['stok'];
                         $idproduk = $data['idproduk'];
 
 

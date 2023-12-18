@@ -1,6 +1,5 @@
 <?php
 require 'function.php';
-require 'cek.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,6 +11,7 @@ require 'cek.php';
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Stock Item</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -25,8 +25,8 @@ require 'cek.php';
             transition: 0.3s ease;
         }
 
-        a{
-            text-decoration: black ;
+        a {
+            text-decoration: black;
             color: black;
         }
     </style>
@@ -39,41 +39,34 @@ require 'cek.php';
                 class="fas fa-bars"></i></button>
     </nav>
     <div id="layoutSidenav">
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <a class="nav-link" href="index.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Dashboard
-                        </a>
-                        <a class="nav-link" href="stok.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Stock Item
-                        </a>
-                        <a class="nav-link" href="masuk.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Incoming Product
-                        </a>
-                        <a class="nav-link" href="keluar.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Exit Product
-                        </a>
-                        <a class="nav-link" href="admin.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Kelola Admin
-                        </a>
-                        <a class="nav-link" href="logout.php">
-                            Logout
-                        </a>
-                    </div>
+    <div id="layoutSidenav_nav">
+        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+                <div class="nav">
+                    <a class="nav-link" href="stok.php">
+                        <div class="sb-nav-link-icon"><i class="bi bi-bag"></i></div>
+                        Stock Item
+                    </a>
+                    <a class="nav-link" href="masuk.php">
+                        <div class="sb-nav-link-icon"><i class="bi bi-cloud-arrow-down-fill"></i></div>
+                        Incoming Product
+                    </a>
+                    <a class="nav-link" href="keluar.php">
+                        <div class="sb-nav-link-icon"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+                        Exit Product
+                    </a>
+                    <a class="nav-link" href="logout.php">
+                        <div class="sb-nav-link-icon"><i class="bi bi-box-arrow-right"></i></div>
+                        Logout
+                    </a>
                 </div>
-            </nav>
-        </div>
+            </div>
+        </nav>
+    </div>
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Stock Item</h1>
+                        <h1 class="mt-4 mb-4">Stock Produk</h1>
 
                     <div class="card mb-4">
                         <div class="card-header">
@@ -87,7 +80,7 @@ require 'cek.php';
                         <div class="card-body">
 
                             <?php
-                            $ambildatastok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE stok_produk < 1");
+                            $ambildatastok = mysqli_query($conn, "SELECT * FROM stok_produk WHERE stok < 1");
                             while ($fetch = mysqli_fetch_array($ambildatastok)) {
                                 $produk = $fetch['nama_produk'];
                                 ?>
@@ -122,7 +115,7 @@ require 'cek.php';
                                         while ($data = mysqli_fetch_array($ambilsemuadatastok)) {
                                             $namaproduk = $data['nama_produk'];
                                             $deskripsi = $data['deskripsi'];
-                                            $stok = $data['stok_produk'];
+                                            $stok = $data['stok'];
                                             $idproduk = $data['idproduk'];
 
                                             // cek ada gambar atau tidak
@@ -143,8 +136,8 @@ require 'cek.php';
                                                 <td>
                                                     <?= $image; ?>
                                                 </td>
-                                                <td><strong>
-                                                    <a href="detail.php?id=<?=$idproduk;?>"><?= $namaproduk; ?></a></strong>
+                                                <td>
+                                                    <?= $namaproduk; ?>
                                                 </td>
                                                 <td>
                                                     <?= $deskripsi; ?>
@@ -264,8 +257,7 @@ require 'cek.php';
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
     <script src="assets/demo/chart-area-demo.js"></script>
@@ -282,7 +274,7 @@ require 'cek.php';
 
             <!-- Modal Header -->
             <div class="modal-header">
-                <h4 class="modal-title">Tambah Produk</h4>
+                <h4 class="modal-title text-black">Tambah Produk</h4>
             </div>
 
             <!-- Modal body -->

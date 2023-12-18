@@ -49,7 +49,7 @@ if (!isset($_SESSION['log'])) {
                 <input type="text" id="email" name="email" placeholder="example@gmail.com">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="password">
-                <button type="submit" name="login" href="index.html">Login</button>
+                <button type="submit" name="login" href="index.php">Login</button>
         </div>
         <div class="right">
             <img src="loginform/img/image.jpg" alt="">

@@ -1,3 +1,8 @@
+<?php
+require 'function.php';
+require 'cek.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,23 +23,20 @@
     <div class="container">
         <div class="slides">
             <div class="slide">
-                <img src="home/img/p8.jpg" alt="">
+                <img src="home/img/p1.jpg" alt="">
             </div>
             <div class="slide">
-                <img src="home/img/p9.jpg" alt="">
+                <img src="home/img/p2.jpg" alt="">
             </div>
 
             <div class="slide">
-                <img src="home/img/p10.jpg" alt="">
+                <img src="home/img/p3.jpg" alt="">
             </div>
             <div class="slide">
-                <img src="home/img/p12.jpg" alt="">
+                <img src="home/img/p4.jpg" alt="">
             </div>
             <div class="slide">
-                <img src="home/img/p13.jpg" alt="">
-            </div>
-            <div class="slide">
-                <img src="home/img/p14.jpg" alt="">
+                <img src="home/img/p5.jpg" alt="">
             </div>
             <div class="navigation">
                 <a class="prev" onclick="plusSlides(-1)">&#10094;</a>

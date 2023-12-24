@@ -1,5 +1,6 @@
 <?php
 require 'function.php';
+require 'cek.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,26 +73,6 @@ require 'function.php';
                             data-target="#ModalAddExitProduk">
                             Add Exit Product
                         </button>
-                        <br>
-                        <div class="row mt-4">
-                            <div class="col">
-                                <form method="post" class="form-inline">
-                                    <div class="row align-items-center">
-                                        <div class="col-auto">
-                                            Tanggal Mulai: <input type="date" name="tgl_mulai" class="form-control">
-                                        </div>
-                                        <div class="col-auto">
-                                            Tanggal Selesai: <input type="date" name="tgl_selesai"
-                                                class="form-control ml-1">
-                                        </div>
-                                        <div class="col-auto">
-                                            <button type="submit" name="filter_tgl" class="btn btn-info ml-1"
-                                                style="margin-top: 25px;">Filter</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -110,26 +91,7 @@ require 'function.php';
 
                                     <?php
 
-                                    if (isset($_POST['filter_tgl'])) {
-                                        $mulai = $_POST['tgl_mulai'];
-                                        $selesai = $_POST['tgl_selesai'];
-
-                                        // Ubah format tanggal untuk memastikan format yang benar dalam query
-                                        $mulai = date('Y-m-d', strtotime($mulai));
-                                        $selesai = date('Y-m-d', strtotime($selesai));
-
-                                        if ($mulai != '' && $selesai != '') {
-                                            // Tambahkan interval satu hari ke tanggal selesai agar mencakup rentang tanggal yang dipilih
-                                            $selesai = date('Y-m-d', strtotime($selesai . ' +1 day'));
-
-                                            $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_keluar k, stok_produk s WHERE s.idproduk = k.idproduk and tanggal BETWEEN '$mulai' AND '$selesai'");
-                                        } else {
-                                            $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_keluar k, stok_produk s WHERE s.idproduk = k.idproduk");
-                                        }
-                                    } else {
-                                        $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_keluar k, stok_produk s WHERE s.idproduk = k.idproduk");
-                                    }
-
+                                    $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_keluar k, stok_produk s WHERE s.idproduk = k.idproduk");
                                     while ($data = mysqli_fetch_array($ambilsemuadatastok)) {
                                         $idk = $data['idkeluar'];
                                         $idproduk = $data['idproduk'];
@@ -299,16 +261,16 @@ require 'function.php';
             <form method="post">
                 <div class="modal-body">
 
-                    <select name="produk" class="form-control">
+                    <select name="produknya" class="form-control">
                         <?php
                         $ambilsemuadata = mysqli_query($conn, "SELECT * FROM stok_produk");
                         while ($fetcharray = mysqli_fetch_array($ambilsemuadata)) {
-                            $namaproduk = $fetcharray['nama_produk'];
-                            $idproduk = $fetcharray['idproduk'];
+                            $namaproduknya = $fetcharray['nama_produk'];
+                            $idproduknya = $fetcharray['idproduk'];
                             ?>
 
-                            <option value="<?= $idproduk; ?>">
-                                <?= $namaproduk; ?>
+                            <option value="<?= $idproduknya; ?>">
+                                <?= $namaproduknya; ?>
                             </option>
                             <?php
                         }

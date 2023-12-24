@@ -1,5 +1,7 @@
 <?php
 require 'function.php';
+require 'cek.php';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -172,7 +174,7 @@ require 'function.php';
                                                             <div class="modal-body">
                                                                 <input type="file" name="file" class="form-control">
                                                                 <br>
-                                                                <input type="text" name="namaproduk"
+                                                                <input type="text" name="nama_produk"
                                                                     value="<?= $namaproduk; ?>" class="form-control"
                                                                     required>
                                                                 <br>
@@ -286,7 +288,7 @@ require 'function.php';
                     <br>
                     <input type="text" name="deskripsi" placeholder="Deskripsi" class="form-control" required>
                     <br>
-                    <input type="number" name="stok" class="form-control" placeholder="Stok" required>
+                    <input type="number" name="stok" placeholder="Stok" class="form-control" required>
                     <br>
                     <button type="submit" class="btn btn-primary" name="addnewproduk">Submit</button>
                 </div>

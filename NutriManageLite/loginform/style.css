@@ -5,13 +5,14 @@
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-body{
+body {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: rgb(125, 187, 96);
+    background: linear-gradient(to bottom right, rgb(125, 187, 96), rgb(38, 129, 46));
 }
+
 
 .container{
     width: 100%;

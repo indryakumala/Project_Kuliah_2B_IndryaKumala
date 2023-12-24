@@ -6,8 +6,9 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: rgb(172, 230, 172);
+    background: linear-gradient(to bottom, rgb(172, 230, 172), rgb(112, 183, 161));
 }
+
 
 .btn-primary {
     text-align: center; 

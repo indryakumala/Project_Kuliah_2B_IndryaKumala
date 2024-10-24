@@ -31,46 +31,43 @@ require 'cek.php';
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <a class="navbar-brand ps-3" href="index.php">NutriManageLite</a>
-        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
-                class="fas fa-bars"></i></button>
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     </nav>
     <div id="layoutSidenav">
-    <div id="layoutSidenav_nav">
-        <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-            <div class="sb-sidenav-menu">
-                <div class="nav">
-                    <a class="nav-link" href="stok.php">
-                        <div class="sb-nav-link-icon"><i class="bi bi-bag"></i></div>
-                        Stock Item
-                    </a>
-                    <a class="nav-link" href="masuk.php">
-                        <div class="sb-nav-link-icon"><i class="bi bi-cloud-arrow-down-fill"></i></div>
-                        Incoming Product
-                    </a>
-                    <a class="nav-link" href="keluar.php">
-                        <div class="sb-nav-link-icon"><i class="bi bi-cloud-arrow-up-fill"></i></div>
-                        Exit Product
-                    </a>
-                    <a class="nav-link" href="logout.php">
-                        <div class="sb-nav-link-icon"><i class="bi bi-box-arrow-right"></i></div>
-                        Logout
-                    </a>
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <a class="nav-link" href="stok.php">
+                            <div class="sb-nav-link-icon"><i class="bi bi-bag"></i></div>
+                            Stock Item
+                        </a>
+                        <a class="nav-link" href="masuk.php">
+                            <div class="sb-nav-link-icon"><i class="bi bi-cloud-arrow-down-fill"></i></div>
+                            Incoming Product
+                        </a>
+                        <a class="nav-link" href="keluar.php">
+                            <div class="sb-nav-link-icon"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+                            Exit Product
+                        </a>
+                        <a class="nav-link" href="logout.php">
+                            <div class="sb-nav-link-icon"><i class="bi bi-box-arrow-right"></i></div>
+                            Logout
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </div>
+            </nav>
+        </div>
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
                     <h1 class="mt-4 mb-4">Produk Masuk</h1>
 
-
                     <div class="card mb-4">
                         <div class="card-header">
                             <!-- Button to Open the Modal -->
-                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#ModalAddProdukMasuk">
-                                Add Imcoming Product
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAddProdukMasuk">
+                                Add Incoming Product
                             </button>
                         </div>
                         <div class="card-body">
@@ -89,7 +86,6 @@ require 'cek.php';
                                     <tbody>
 
                                         <?php
-
                                         $ambilsemuadatastok = mysqli_query($conn, "SELECT * FROM produk_masuk m, stok_produk s where s.idproduk =m.idproduk");
                                         while ($data = mysqli_fetch_array($ambilsemuadatastok)) {
                                             $idproduk = $data['idproduk'];
@@ -109,30 +105,18 @@ require 'cek.php';
                                                 $image = '<img src="image/' . $gambar . '" class="zoomable">';
                                             }
 
-                                            ?>
+                                        ?>
                                             <tr>
+                                                <td><?= $tanggal ?></td>
+                                                <td><?= $image ?></td>
+                                                <td><?= $namaproduk; ?></td>
+                                                <td><?= $qty; ?></td>
+                                                <td><?= $keterangan; ?></td>
                                                 <td>
-                                                    <?= $tanggal ?>
-                                                </td>
-                                                <td>
-                                                    <?= $image ?>
-                                                </td>
-                                                <td>
-                                                    <?= $namaproduk; ?>
-                                                </td>
-                                                <td>
-                                                    <?= $qty; ?>
-                                                </td>
-                                                <td>
-                                                    <?= $keterangan; ?>
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-warning" data-toggle="modal"
-                                                        data-target="#edit<?= $idm; ?>">
+                                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit<?= $idm; ?>">
                                                         Edit
                                                     </button>
-                                                    <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#delete<?= $idm; ?>">
+                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete<?= $idm; ?>">
                                                         Delete
                                                     </button>
                                                 </td>
@@ -142,79 +126,52 @@ require 'cek.php';
                                             <div class="modal fade" id="edit<?= $idm; ?>">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-
-                                                        <!-- Modal Header -->
                                                         <div class="modal-header">
                                                             <h4 class="modal-title">Edit Product</h4>
                                                         </div>
-
-                                                        <!-- Modal body -->
                                                         <form method="post">
                                                             <div class="modal-body">
-                                                                <input type="text" name="keterangan"
-                                                                    value="<?= $keterangan; ?>" class="form-control"
-                                                                    required>
+                                                                <input type="text" name="keterangan" value="<?= $keterangan; ?>" class="form-control" required>
                                                                 <br>
-                                                                <input type="number" name="qty" value="<?= $qty; ?>"
-                                                                    class="form-control" required>
+                                                                <input type="number" name="qty" value="<?= $qty; ?>" class="form-control" required>
                                                                 <br>
-                                                                <input type="hidden" name="idproduk"
-                                                                    value="<?= $idproduk; ?>">
-                                                                <br>
+                                                                <input type="hidden" name="idproduk" value="<?= $idproduk; ?>">
                                                                 <input type="hidden" name="idmasuk" value="<?= $idm; ?>">
-                                                                <button type="submit" class="btn btn-primary"
-                                                                    name="updateprodukmasuk">Submit</button>
+                                                                <button type="submit" class="btn btn-primary" name="updateprodukmasuk">Submit</button>
                                                             </div>
                                                         </form>
-
-                                                        <!-- Modal footer -->
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger"
-                                                                data-dismiss="modal">Close</button>
+                                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
 
                                             <!-- Delete Modal -->
                                             <div class="modal fade" id="delete<?= $idm; ?>">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
-
-                                                        <!-- Modal Header -->
                                                         <div class="modal-header">
                                                             <h4 class="modal-title">Delete Product</h4>
-                                                            <button type="button" class="close"
-                                                                data-dismiss="modal">&times;</button>
                                                         </div>
-
-                                                        <!-- Modal body -->
                                                         <form method="post">
                                                             <div class="modal-body">
-                                                                Apakah Anda yakin ingin menghapus
-                                                                <?= $namaproduk; ?>?
+                                                                Apakah Anda yakin ingin menghapus <?= $namaproduk; ?>?
                                                                 <br>
-                                                                <input type="hidden" name="idproduk"
-                                                                    value="<?= $idproduk; ?>">
-                                                                <br>
-                                                                <input type="hidden" name="qty" value="<?= $qty; ?>">
-                                                                <br>
+                                                                <input type="hidden" name="idproduk" value="<?= $idproduk; ?>">
                                                                 <input type="hidden" name="idmasuk" value="<?= $idm; ?>">
-                                                                <button type="submit" class="btn btn-danger"
-                                                                    name="deleteprodukmasuk">Delete</button>
+                                                                <input type="hidden" name="qty" value="<?= $qty; ?>">
+                                                                <button type="submit" class="btn btn-danger" name="deleteprodukmasuk">Delete</button>
                                                             </div>
                                                         </form>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <?php
-
-
-                                        }
-                                        ;
-                                        ?>
+                                        <?php } ?>
 
                                     </tbody>
                                 </table>
@@ -237,61 +194,107 @@ require 'cek.php';
             </footer>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-    <script src="js/scripts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="assets/demo/chart-area-demo.js"></script>
-    <script src="assets/demo/chart-bar-demo.js"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery-dataTables.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-    <script src="assets/demo/datatables-demo.js"></script>
-</body>
 
-<!-- The Modal -->
-<div class="modal fade" id="ModalAddProdukMasuk">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title text-black">Tambah Produk Masuk</h4>
-            </div>
-
-            <!-- Modal body -->
-            <form method="post">
-                <div class="modal-body">
-                    <select name="produknya" class="form-control">
-                        <?php
-                        $ambilsemuadata = mysqli_query($conn, "SELECT * FROM stok_produk");
-                        while ($fetcharray = mysqli_fetch_array($ambilsemuadata)) {
-                            $namaproduknya = $fetcharray['nama_produk'];
-                            $idproduknya = $fetcharray['idproduk'];
-                            ?>
-
-                            <option value="<?= $idproduknya; ?>">
-                                <?= $namaproduknya; ?>
-                            </option>
-                            <?php
-                        }
-                        ?>
-                    </select>
-                    <br>
-                    <input type="number" name="qty" class="form-control" placeholder="Quantity" required>
-                    <br>
-                    <input type="text" name="keterangan" class="form-control" placeholder="Keterangan" required>
-                    <br>
-                    <button type="submit" class="btn btn-primary" name="produkmasuk">Submit</button>
+    <!-- The Modal for Add Incoming Product -->
+    <div class="modal fade" id="ModalAddProdukMasuk">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-black">Tambah Produk Masuk</h4>
                 </div>
-            </form>
+                <form method="post">
+                    <div class="modal-body">
+                        <select name="produknya" class="form-control">
+                            <?php
+                            $ambilsemuadata = mysqli_query($conn, "SELECT * FROM stok_produk");
+                            while ($fetcharray = mysqli_fetch_array($ambilsemuadata)) {
+                                $namaproduknya = $fetcharray['nama_produk'];
+                                $idproduknya = $fetcharray['idproduk'];
+                            ?>
+                                <option value="<?= $idproduknya; ?>"><?= $namaproduknya; ?></option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                        <br>
+                        <input type="number" name="qty" placeholder="Quantity" class="form-control" required>
+                        <br>
+                        <input type="text" name="keterangan" placeholder="Description" class="form-control" required>
+                        <br>
 
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <!-- Button for Barcode Scanner -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <input type="text" name="barcode" placeholder="Scan Barcode" class="form-control" id="barcodeInput" required>
+                            <button type="button" class="btn btn-outline-secondary ms-2" id="scanBarcodeBtn">
+                                <i class="bi bi-camera"></i> Scan
+                            </button>
+                        </div>
+                        <br>
+
+                        <button type="submit" class="btn btn-primary" name="produkmasuk">Submit</button>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Modal for Barcode Scanning -->
+    <div class="modal fade" id="barcodeScannerModal" tabindex="-1" aria-labelledby="barcodeScannerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="barcodeScannerModalLabel">Scan Barcode</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <video id="barcodeScanner" width="100%" height="400" autoplay></video>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/scripts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
+    <script src="js/datatables-simple-demo.js"></script>
+
+    <script>
+        const scanBarcodeBtn = document.getElementById('scanBarcodeBtn');
+        const barcodeInput = document.getElementById('barcodeInput');
+        const barcodeScannerModal = new bootstrap.Modal(document.getElementById('barcodeScannerModal'));
+        const video = document.getElementById('barcodeScanner');
+
+        // Function to open the camera and start scanning
+        scanBarcodeBtn.addEventListener('click', function() {
+            barcodeScannerModal.show();
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } }).then(function(stream) {
+                    video.srcObject = stream;
+                    video.play();
+                });
+            }
+        });
+
+        // Use a barcode scanner library (e.g., QuaggaJS) to detect the barcode and set the value to the input field
+        // Example using QuaggaJS:
+        // Quagga.onDetected(function(result) {
+        //     barcodeInput.value = result.codeResult.code;
+        //     barcodeScannerModal.hide();
+        //     video.srcObject.getTracks().forEach(track => track.stop());
+        // });
+
+        // Stop the camera stream when the modal is closed
+        barcodeScannerModal._element.addEventListener('hidden.bs.modal', function () {
+            video.srcObject.getTracks().forEach(track => track.stop());
+        });
+    </script>
+
+</body>
 
 </html>
